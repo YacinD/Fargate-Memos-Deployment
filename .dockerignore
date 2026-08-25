@@ -1,0 +1,15 @@
+.git
+.github
+.vscode
+
+app/memos/.git
+app/memos/.github
+
+app/memos/node_modules
+app/memos/web/node_modules
+
+app/memos/build
+app/memos/dist
+
+*.log
+.DS_Store
