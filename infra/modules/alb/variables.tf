@@ -1,31 +1,31 @@
+variable "project_name" {
+  type = string
+}
+
 variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
+  type = string
 }
 
 variable "public_subnet_ids" {
-  description = "Public subnet IDs for the ALB"
-  type        = list(string)
-}
-
-variable "certificate_arn" {
-  description = "ACM certificate ARN for HTTPS listener"
-  type        = string
+  type = list(string)
 }
 
 variable "container_port" {
-  description = "Port the container listens on"
-  type        = number
-  default     = 5230
+  type    = number
+  default = 5230
 }
 
-variable "environment" {
-  description = "Environment name (dev/prod)"
-  type        = string
+variable "health_check_path" {
+  type    = string
+  default = "/"
 }
 
-variable "project_name" {
-  description = "Project name used for naming"
-  type        = string
-  default     = "memos"
+variable "ssl_policy" {
+  type    = string
+  default = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
+}
+
+variable "certificate_arn" {
+  # Comes from the acm module's output — the validated cert ARN
+  type = string
 }

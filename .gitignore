@@ -1,23 +1,43 @@
 # Terraform
 .terraform/
+.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform variable files (may contain secrets)
 *.tfvars
 *.tfvars.json
+!terraform.tfvars.example
 
-# Environment / secrets
-.env
-.env.*
-
-# AWS credentials
+# AWS
 .aws/
 
-# macOS
+# OS
 .DS_Store
+Thumbs.db
 
-# IDE
+# Editor
 .vscode/
 .idea/
 
-# Logs
+# Docker
 *.log
+
+# Terraform backend/state backups
+*.backup
+
+# Node (frontend build artifacts, if app/memos/web gets touched locally)
+node_modules/
+dist/
+
+# Go build artifacts
+*.exe
+*.test
+*.out

@@ -13,3 +13,12 @@ app/memos/dist
 
 *.log
 .DS_Store
+
+.git
+.github
+.terraform
+*.tfstate
+*.tfstate.*
+.gitignore
+README.md
+node_modules

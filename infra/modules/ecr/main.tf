@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "main" {
+resource "aws_ecr_repository" "this" {
   name                 = var.repository_name
   image_tag_mutability = "MUTABLE"
 
@@ -11,7 +11,6 @@ resource "aws_ecr_repository" "main" {
   }
 
   tags = {
-    Name        = var.repository_name
-    Environment = var.environment
+    Name = var.repository_name
   }
 }

@@ -1,17 +1,8 @@
-# ---------- ECS Cluster ----------
-
-resource "aws_ecs_cluster" "main" {
-  name = var.cluster_name
-
-  tags = {
-    Name        = var.cluster_name
-    Environment = var.environment
-  }
+resource "aws_ecs_cluster" "this" {
+  name = "${var.project_name}-cluster"
 }
 
-# ---------- IAM Execution Role ----------
-
-data "aws_iam_policy_document" "ecs_assume_role" {
+data "aws_iam_policy_document" "ecs_task_execution_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -24,45 +15,53 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "ecsTaskExecutionRole"
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
-
-  tags = {
-    Environment = var.environment
-  }
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# ---------- CloudWatch Log Group ----------
+resource "aws_security_group" "ecs" {
+  name   = "${var.project_name}-ecs-sg"
+  vpc_id = var.vpc_id
 
-resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "/ecs/${var.task_family}"
-  retention_in_days = 7
+  ingress {
+    from_port       = var.container_port
+    to_port         = var.container_port
+    protocol        = "tcp"
+    security_groups = [var.alb_security_group_id]
+    description     = "App port from ALB"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   tags = {
-    Environment = var.environment
+    Name = "${var.project_name}-ecs-sg"
   }
 }
 
-# ---------- Task Definition ----------
-
-resource "aws_ecs_task_definition" "main" {
-  family                   = var.task_family
+resource "aws_ecs_task_definition" "this" {
+  family                   = "${var.project_name}-task"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = var.cpu
-  memory                   = var.memory
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
   }
 
   ephemeral_storage {
-    size_in_gib = 21
+    size_in_gib = var.ephemeral_storage_gib
   }
 
   container_definitions = jsonencode([
@@ -73,38 +72,24 @@ resource "aws_ecs_task_definition" "main" {
       portMappings = [
         {
           containerPort = var.container_port
+          hostPort      = var.container_port
           protocol      = "tcp"
         }
       ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "ecs"
-        }
-      }
     }
   ])
-
-  tags = {
-    Name        = var.task_family
-    Environment = var.environment
-  }
 }
 
-# ---------- ECS Service ----------
-
-resource "aws_ecs_service" "main" {
-  name            = "${var.project_name}-task-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.main.arn
+resource "aws_ecs_service" "this" {
+  name            = var.service_name
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.this.arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
   network_configuration {
     subnets          = var.private_subnet_ids
-    security_groups  = [var.ecs_security_group_id]
+    security_groups  = [aws_security_group.ecs.id]
     assign_public_ip = false
   }
 
@@ -112,12 +97,5 @@ resource "aws_ecs_service" "main" {
     target_group_arn = var.target_group_arn
     container_name    = var.container_name
     container_port    = var.container_port
-  }
-
-  depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_policy]
-
-  tags = {
-    Name        = "${var.project_name}-task-service"
-    Environment = var.environment
   }
 }
