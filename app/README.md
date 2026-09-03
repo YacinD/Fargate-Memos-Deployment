@@ -32,7 +32,7 @@ s
 * **ACM** provides HTTPS for `ecsv1.online`.
 * **Route 53** hosts the DNS zone.
 * **Terraform** manages the infrastructure through reusable modules.
-* **S3** provides remote Terraform state with native S3 locking.s
+* **S3** provides remote Terraform state with native S3 locking.
 
 ---
 
