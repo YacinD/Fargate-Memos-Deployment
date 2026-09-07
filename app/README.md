@@ -11,7 +11,7 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 🌐 **https://ecsv1.online**
 
 > 📸 **[SCREENSHOT PLACEHOLDER - Live application]**
-
+s
 ---
 
 ## Architecture Overview
