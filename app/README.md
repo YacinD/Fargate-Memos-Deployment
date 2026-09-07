@@ -28,7 +28,7 @@ Internet → Route 53 → ACM/HTTPS → ALB → ECS Fargate → Memos
 s
 * **ECS Fargate** removes the need to manage servers.
 * **ECR** stores the container image used by ECS.
-* **ALB** provides the public entry point and routes traffic to port `5230`.
+* **ALB** provides the public entry point and routes traffic to port `5230`..
 * **ACM** provides HTTPS for `ecsv1.online`.
 * **Route 53** hosts the DNS zone.
 * **Terraform** manages the infrastructure through reusable modules.
