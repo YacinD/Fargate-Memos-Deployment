@@ -1,57 +1,39 @@
 # Fargate Memos Deployment
 
-A production-style deployment of the **Memos application on AWS ECS Fargate**, provisioned with **Terraform** and automated through **GitHub Actions**.
+A containerised deployment of **Memos on AWS ECS Fargate**, with infrastructure managed using **Terraform** and deployments automated through **GitHub Actions**.
 
-The project demonstrates the full DevOps workflow - containerisation, AWS infrastructure, Infrastructure as Code, CI/CD, HTTPS, custom DNS, secure authentication and post-deployment health checks.
+This project demonstrates practical DevOps concepts including Docker, AWS networking, Infrastructure as Code, CI/CD, HTTPS and secure AWS authentication.
 
-## 🚀 Project Overview
+## 🎥 Live Deployment
 
-* **Application:** Memos
-* **Cloud:** AWS
-* **Compute:** ECS Fargate
-* **Container Registry:** Amazon ECR
-* **Infrastructure:** Terraform
-* **CI/CD:** GitHub Actions
-* **Load Balancer:** Application Load Balancer
-* **HTTPS:** AWS Certificate Manager
-* **DNS:** Route 53
-* **Authentication:** GitHub Actions OIDC
-* **Region:** `eu-west-2`
-* **Status:** Live
+<!-- LIVE WEBSITE VIDEO GOES HERE -->
 
-🌐 **Live Application:** https://ecsv1.online
+**Live application:**
+https://ecsv1.online
+
+*Add deployment walkthrough video here showing the live website running.*
 
 ## 🏗️ Architecture
 
-The application runs as a containerised workload on **AWS ECS Fargate**.
+<!-- ARCHITECTURE DIAGRAM GOES HERE -->
 
-Traffic reaches the application through a custom domain and HTTPS-enabled Application Load Balancer. The ALB forwards traffic to the ECS Fargate service running the Memos container on port `5230`.
+![Architecture Diagram](./docs/architecture.png)
 
-The infrastructure is deployed within a custom VPC using public and private networking, security groups, route tables and a NAT Gateway.
-
-### Traffic Flow
+The application follows:
 
 **User → Route 53 → ALB → ECS Fargate → Memos**
 
-## 🛠️ Technologies
-
-| Technology                | Purpose                        |
-| ------------------------- | ------------------------------ |
-| AWS ECS Fargate           | Container compute              |
-| Amazon ECR                | Docker image storage           |
-| Application Load Balancer | Traffic routing & HTTPS        |
-| VPC                       | Network isolation              |
-| NAT Gateway               | Private subnet outbound access |
-| Route 53                  | DNS                            |
-| ACM                       | TLS certificate                |
-| Terraform                 | Infrastructure as Code         |
-| Docker                    | Containerisation               |
-| GitHub Actions            | CI/CD                          |
-| GitHub OIDC               | Secure AWS authentication      |
-| Go                        | Application backend            |
-| SQLite                    | Application database           |
+* **Route 53** - Routes the custom domain to the application.
+* **ALB** - Handles HTTPS traffic and forwards requests to ECS.
+* **ECS Fargate** - Runs the container without managing servers.
+* **ECR** - Stores the Docker image used by ECS.
+* **VPC** - Provides isolated AWS networking.
 
 ## 📁 Project Structure
+
+<!-- PROJECT STRUCTURE SVG GOES HERE -->
+
+*Add the project structure SVG/tree diagram here.*
 
 ```text
 Fargate-Memos-Deployment/
@@ -75,169 +57,46 @@ Fargate-Memos-Deployment/
 └── README.md
 ```
 
-## 🐳 Docker
+**SVG:** *Project structure diagram to be added here.*
 
-The Memos application is containerised using a **multi-stage Docker build**.
+## 🛠️ Tech Stack
 
-The build separates the frontend, backend and runtime stages, keeping the final production image focused on the application runtime.
+* **AWS:** ECS Fargate, ECR, ALB, VPC, Route 53, ACM, IAM
+* **Infrastructure:** Terraform
+* **Containerisation:** Docker
+* **CI/CD:** GitHub Actions
+* **Authentication:** GitHub OIDC
+* **Application:** Memos / Go
 
-The container exposes:
+## 🏗️ Infrastructure
 
-```text
-5230
-```
+Terraform manages the AWS infrastructure, including the VPC, subnets, NAT Gateway, route tables, security groups, ECR, ECS, ALB, ACM and Route 53.
 
-The image is built and pushed to **Amazon ECR** as part of the deployment workflow.
-
-## ☁️ AWS Infrastructure
-
-Terraform provisions the AWS infrastructure required to run the application.
-
-Key resources include:
-
-* VPC
-* Public and private subnets
-* Internet Gateway
-* NAT Gateway
-* Route tables
-* Route table associations
-* Network ACLs
-* Security groups
-* ECR repository
-* ECS cluster
-* ECS task definition
-* ECS service
-* Application Load Balancer
-* Target group
-* ALB listeners
-* ACM certificate
-* Route 53 records
-* IAM resources
-
-The ECS tasks run behind the ALB while networking and security controls restrict direct access to the application.
-
-## 🏗️ Infrastructure as Code
-
-The AWS environment is managed using **Terraform** rather than relying on manual configuration.
-
-Terraform provides:
-
-* Reproducible infrastructure
-* Version-controlled configuration
-* Consistent deployments
-* Infrastructure change tracking
-* Automated planning and deployment
-
-Terraform state is managed remotely to maintain a consistent source of truth for the deployed infrastructure.
+Using Terraform makes the infrastructure **reproducible, version-controlled and easier to maintain** rather than relying on manual AWS configuration.
 
 ## 🔄 CI/CD
 
-GitHub Actions automates the deployment process.
+GitHub Actions automates the deployment process:
 
-The pipeline performs:
+**Git Push → Docker Build → ECR → Terraform → ECS → Health Check**
 
-1. Checkout source code
-2. Authenticate to AWS using OIDC
-3. Build the Docker image
-4. Push the image to ECR
-5. Initialise Terraform
-6. Validate the configuration
-7. Generate a Terraform plan
-8. Apply the infrastructure
-9. Wait for the service to stabilise
-10. Perform a post-deployment health check
+The workflow uses **GitHub OIDC** to authenticate with AWS, avoiding long-lived AWS access keys.
 
-### AWS Authentication
-
-The workflow uses **GitHub Actions OIDC** to assume an AWS IAM role.
-
-This avoids storing long-lived AWS access keys inside GitHub.
+After deployment, an automated health check verifies that the live application returns **HTTP 200**.
 
 ## 🔐 Security
 
-Security was considered throughout the deployment.
-
-* ECS tasks run within the VPC
-* Security groups control traffic between the ALB and ECS
-* HTTPS encrypts client traffic
-* ACM manages the TLS certificate
+* ECS runs within the VPC
+* Security groups restrict application traffic
+* HTTPS is enabled through ACM
 * IAM controls AWS permissions
 * GitHub OIDC removes the need for long-lived AWS credentials
-* ECR provides private container image storage
-* Private networking is used for ECS workloads
 
-## 🌐 HTTPS & Custom Domain
+## 📚 What I Learned
 
-The application is available through a custom domain:
+This project followed a **ClickOps → Terraform → CI/CD** approach, giving hands-on experience with deploying, troubleshooting and automating a real AWS workload.
 
-**https://ecsv1.online**
+Key areas covered:
 
-HTTPS is terminated at the Application Load Balancer using an AWS Certificate Manager certificate.
+**Docker • AWS Networking • ECS Fargate • ECR • Terraform • CI/CD • IAM • OIDC • HTTPS • DNS**
 
-Route 53 manages DNS resolution for the domain.
-
-## ❤️ Health Checks
-
-The CI/CD pipeline performs an automated post-deployment health check.
-
-After Terraform completes, the workflow waits for the service to stabilise and sends an HTTP request to the live application.
-
-The deployment is considered successful when:
-
-```text
-HTTP 200
-```
-
-is returned.
-
-If the application fails the health check, the GitHub Actions workflow fails.
-
-## 📚 What This Project Demonstrates
-
-This project provides hands-on experience with:
-
-* AWS cloud infrastructure
-* Docker containerisation
-* ECS Fargate
-* Amazon ECR
-* VPC networking
-* Application Load Balancers
-* HTTPS/TLS
-* Route 53
-* IAM
-* Terraform
-* Remote Terraform state
-* GitHub Actions
-* CI/CD
-* GitHub OIDC
-* Infrastructure troubleshooting
-* Automated deployment validation
-
-## 🎯 Key Learning
-
-The project follows a **ClickOps → Terraform → CI/CD** progression.
-
-Infrastructure was first understood and configured manually before being translated into Terraform and eventually automated through GitHub Actions.
-
-This provided practical experience understanding not only **how to deploy an application**, but also how the underlying AWS networking, security, infrastructure and automation work together.
-
-## 📊 Project Status
-
-| Component           | Status     |
-| ------------------- | ---------- |
-| Docker              | ✅ Complete |
-| ECR                 | ✅ Complete |
-| ECS Fargate         | ✅ Complete |
-| VPC & Networking    | ✅ Complete |
-| ALB                 | ✅ Complete |
-| HTTPS / ACM         | ✅ Complete |
-| Custom Domain       | ✅ Complete |
-| Terraform           | ✅ Complete |
-| GitHub Actions      | ✅ Complete |
-| OIDC Authentication | ✅ Complete |
-| Health Check        | ✅ Complete |
-| Live Deployment     | ✅ Live     |
-
----
-
-**Built as a hands-on DevOps project to demonstrate AWS, Terraform, Docker and CI/CD in a complete cloud deployment.**
