@@ -1,14 +1,19 @@
-name: Build and Push Docker Image to ECR
+name: Terraform Deploy
 
 on:
   push:
     branches: [main]
     paths:
-      - 'app/**'
-      - 'Dockerfile'
-      - '.dockerignore'
-      - '.github/workflows/build.yml'
+      - 'infra/**'
+      - '.github/workflows/deploy.yml'
+
   workflow_dispatch:
+    inputs:
+      deploy_terraform:
+        description: 'Run Terraform deployment?'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   id-token: write
@@ -16,11 +21,14 @@ permissions:
 
 env:
   AWS_REGION: eu-west-2
-  ECR_REPOSITORY: ecs-memos
 
 jobs:
-  build-and-push:
+  terraform:
+    if: github.event_name == 'push' || inputs.deploy_terraform == true
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
 
     steps:
       - name: Checkout code
@@ -32,22 +40,47 @@ jobs:
           role-to-assume: arn:aws:iam::956076205260:role/github-actions-deploy
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
 
-      - name: Build, tag, and push image to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve tfplan
+
+  health-check:
+    needs: terraform
+    if: github.event_name == 'push' || inputs.deploy_terraform == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for service to stabilize
+        run: sleep 30
+
+      - name: Check site health
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://ecsv1.online)
+          echo "Received HTTP status: $STATUS"
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Health check failed — site did not return 200"
+            exit 1
+          fi
+          echo "Health check passed — site is up"
 
       - name: Job summary
         run: |
-          echo "### Docker image pushed" >> $GITHUB_STEP_SUMMARY
-          echo "- Repository: \`$ECR_REPOSITORY\`" >> $GITHUB_STEP_SUMMARY
-          echo "- Tag: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "### Post-deploy health check" >> $GITHUB_STEP_SUMMARY
+          echo "https://ecsv1.online returned HTTP 200" >> $GITHUB_STEP_SUMMARY
