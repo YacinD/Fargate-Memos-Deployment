@@ -10,8 +10,7 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 
 🌐 **Live Domain:** [ecsv1.online](https://ecsv1.online/) `⚠️ Currently disabled/discontinued`
 
-![Demo video](assets/demo.mov)
-
+![Demo](assets/demo.gif)
 
 ## 🏗️ Architecture Overview
 
