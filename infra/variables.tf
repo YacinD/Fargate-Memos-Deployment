@@ -25,5 +25,5 @@ variable "domain_name" {
 
 variable "container_image" {
   type    = string
-  default = "956076205260.dkr.ecr.eu-west-2.amazonaws.com/ecs-memos:latest"
+  default = "956076205260.dkr.ecr.eu-west-2.amazonaws.com/ecs-memos:v1"
 }

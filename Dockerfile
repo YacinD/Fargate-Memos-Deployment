@@ -2,7 +2,7 @@
 # Stage 1: Build the Memos frontend
 # ============================================================
 
-FROM node:24 AS frontend
+FROM node:24.21.0 AS frontend
 
 WORKDIR /frontend
 

@@ -9,17 +9,8 @@ module "ecr" {
 }
 
 module "acm" {
-  source                  = "./modules/acm"
-  domain_name             = var.domain_name
-  validation_record_fqdns = module.route53.validation_record_fqdns
-}
-
-module "route53" {
-  source                    = "./modules/route53"
-  domain_name               = var.domain_name
-  domain_validation_options = module.acm.domain_validation_options
-  alb_dns_name              = module.alb.dns_name
-  alb_zone_id               = module.alb.zone_id
+  source      = "./modules/acm"
+  domain_name = var.domain_name
 }
 
 module "alb" {
@@ -28,6 +19,15 @@ module "alb" {
   vpc_id            = module.vpc.vpc_id
   public_subnet_ids = module.vpc.public_subnet_ids
   certificate_arn   = module.acm.certificate_arn
+}
+
+module "route53" {
+  source                    = "./modules/route53"
+  domain_name               = var.domain_name
+  domain_validation_options = module.acm.domain_validation_options
+  certificate_arn           = module.acm.certificate_arn
+  alb_dns_name              = module.alb.dns_name
+  alb_zone_id               = module.alb.zone_id
 }
 
 module "ecs" {

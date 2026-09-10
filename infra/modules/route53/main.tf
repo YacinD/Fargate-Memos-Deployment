@@ -20,6 +20,14 @@ resource "aws_route53_record" "cert_validation" {
   allow_overwrite = true
 }
 
+resource "aws_acm_certificate_validation" "this" {
+  certificate_arn = var.certificate_arn
+
+  validation_record_fqdns = [
+    for record in aws_route53_record.cert_validation : record.fqdn
+  ]
+}
+
 resource "aws_route53_record" "root" {
   zone_id = data.aws_route53_zone.this.zone_id
   name    = var.domain_name
@@ -28,6 +36,6 @@ resource "aws_route53_record" "root" {
   alias {
     name                   = var.alb_dns_name
     zone_id                = var.alb_zone_id
-    evaluate_target_health = true
+    evaluate_target_health = false
   }
 }
