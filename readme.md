@@ -183,7 +183,9 @@ After updating Porkbun to the current Route 53 nameservers, **ACM validation com
 
 ## 👤 Author
 
-**Yacin Djama**  
-DevOps Engineer
+### **Yacin Djama**
+*DevOps Engineer*
 
-[LinkedIn](https://linkedin.com/in/yacindjama) · [GitHub](https://github.com/YacinD)
+🔗 [LinkedIn](https://linkedin.com/in/yacindjama) &nbsp;|&nbsp; 💻 [GitHub](https://github.com/YacinD) &nbsp;|&nbsp; ✉️ [Email](mailto:Yacin.Djama@hotmail.com)
+
+---
