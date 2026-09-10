@@ -25,7 +25,7 @@ Internet → Route 53 → ACM/HTTPS → ALB → ECS Fargate → Memos
 ```
 
 ### Key Decisions
-s
+
 * **ECS Fargate** removes the need to manage servers.
 * **ECR** stores the container image used by ECS.
 * **ALB** provides the public entry point and routes traffic to port `5230`..
