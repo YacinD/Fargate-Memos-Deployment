@@ -8,7 +8,9 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 
 ## 📸 Live Application
 
-![Demo video](assets/demo.mp4)
+Domain Name: https://ecsv1.online/ [CURRENTLY DISBALED/DISCONTINUED]
+
+![Demo video](assets/demo.mov)
 
 
 ## 🏗️ Architecture Overview
