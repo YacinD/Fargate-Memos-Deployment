@@ -8,7 +8,7 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 
 ## 📸 Live Application
 
-![Screenshot placeholder](assets/live-app-screenshot.png)
+![Demo video](assets/demo.mp4)
 
 
 ## 🏗️ Architecture Overview
