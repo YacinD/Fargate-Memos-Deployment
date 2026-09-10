@@ -159,7 +159,7 @@ The root **`main.tf`** acts as the orchestration layer, while resources remain i
 
 ---
 
-## Debugging Highlights
+## Debugging Highlight
 
 ### Route 53 Hosted Zone Conflict
 
@@ -181,6 +181,9 @@ After updating Porkbun to the current Route 53 nameservers, **ACM validation com
 
 ---
 
-## Author
+## 👤 Author
 
-**Yacin Djama**
+**Yacin Djama**  
+DevOps Engineer
+
+[LinkedIn](https://linkedin.com/in/yacindjama) · [GitHub](https://github.com/YacinD)
