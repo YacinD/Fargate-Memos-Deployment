@@ -1,4 +1,4 @@
-# Production-Grade Memos Deployment on AWS ECS Fargate
+# Production-Grade Memos Deployment on ECS Fargate
 
 A production-style deployment of **Memos**, a self-hosted note-taking application, running on **AWS ECS Fargate**. The project uses **Terraform** for modular infrastructure-as-code, **Docker** for containerisation, **Amazon ECR** for image storage, and **GitHub Actions** for CI/CD.
 
