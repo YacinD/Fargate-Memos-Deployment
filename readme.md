@@ -8,7 +8,7 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 
 ## 📸 Live Application
 
-Domain Name: https://ecsv1.online/ [CURRENTLY DISBALED/DISCONTINUED]
+🌐 **Live Domain:** [ecsv1.online](https://ecsv1.online/) `⚠️ Currently disabled/discontinued`
 
 ![Demo video](assets/demo.mov)
 
