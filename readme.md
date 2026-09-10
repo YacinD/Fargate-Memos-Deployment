@@ -6,17 +6,14 @@ The application is secured with **HTTPS** through ACM and exposed through the cu
 
 ---
 
-## Live Deployment
+## 📸 Live Application
 
-🌐 **https://ecsv1.online**
+![Screenshot placeholder](assets/live-app-screenshot.png)
 
-> 📸 **[SCREENSHOT PLACEHOLDER - Live application]**
 
----
+## 🏗️ Architecture Overview
 
-## Architecture Overview
-
-> 🏗️ **[ARCHITECTURE DIAGRAM PLACEHOLDER - Add completed architecture diagram here]**
+![Architecture diagram placeholder](assets/architecture-diagram.png)
 
 **Flow:**
 
