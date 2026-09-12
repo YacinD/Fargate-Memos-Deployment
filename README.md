@@ -2,7 +2,7 @@
 
 A production-style deployment of **Memos**, a self-hosted note-taking application, running on **AWS ECS Fargate**. The project uses **Terraform** for modular infrastructure-as-code, **Docker** for containerisation, **Amazon ECR** for image storage, and **GitHub Actions** for CI/CD.
 
-The application is secured with **HTTPS** through ACM and exposed through the custom domain **`ecsv1.online`**, with DNS hosted on **Route 53** and the domain registered through **Porkbun**.
+The application is secured with **HTTPS** through ACM and exposed through the custom domain **`ecsv1.online`**, with DNS hosted on **Route 53** and the domain registered.
 
 ---
 
