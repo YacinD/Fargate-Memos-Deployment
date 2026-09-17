@@ -30,13 +30,18 @@ module "route53" {
   alb_zone_id               = module.alb.zone_id
 }
 
+module "iam" {
+  source = "./modules/iam"
+}
+
 module "ecs" {
-  source                = "./modules/ecs"
-  project_name          = var.project_name
-  service_name          = "memos-task-service-luk8cbkx"
-  vpc_id                = module.vpc.vpc_id
-  private_subnet_ids    = module.vpc.private_subnet_ids
-  alb_security_group_id = module.alb.security_group_id
-  target_group_arn      = module.alb.target_group_arn
-  container_image       = var.container_image
+  source                      = "./modules/ecs"
+  project_name                = var.project_name
+  service_name                = "memos-task-service-luk8cbkx"
+  vpc_id                      = module.vpc.vpc_id
+  private_subnet_ids          = module.vpc.private_subnet_ids
+  alb_security_group_id       = module.alb.security_group_id
+  target_group_arn            = module.alb.target_group_arn
+  container_image             = var.container_image
+  ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
 }
