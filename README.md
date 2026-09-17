@@ -50,6 +50,7 @@ Fargate-Memos-Deployment/
 │   │   ├── vpc/
 │   │   ├── ecr/
 │   │   ├── ecs/
+│   │   ├── iam/
 │   │   ├── alb/
 │   │   ├── acm/
 │   │   └── route53/
