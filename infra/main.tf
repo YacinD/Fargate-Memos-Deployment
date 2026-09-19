@@ -42,4 +42,5 @@ module "ecs" {
   target_group_arn            = module.alb.target_group_arn
   container_image             = var.container_image
   ecs_task_execution_role_arn = module.iam.ecs_task_execution_role_arn
+  aws_region                  = var.aws_region
 }

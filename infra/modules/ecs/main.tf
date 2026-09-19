@@ -1,3 +1,8 @@
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "/ecs/${var.project_name}"
+  retention_in_days = 7
+}
+
 resource "aws_ecs_cluster" "this" {
   name = "${var.project_name}-cluster"
 }
@@ -29,10 +34,10 @@ resource "aws_security_group" "ecs" {
 resource "aws_ecs_task_definition" "this" {
   family                   = "${var.project_name}-task"
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = var.task_cpu
-  memory                   = var.task_memory
-  execution_role_arn       = var.ecs_task_execution_role_arn
+  network_mode              = "awsvpc"
+  cpu                       = var.task_cpu
+  memory                    = var.task_memory
+  execution_role_arn        = var.ecs_task_execution_role_arn
 
   runtime_platform {
     operating_system_family = "LINUX"
@@ -55,6 +60,14 @@ resource "aws_ecs_task_definition" "this" {
           protocol      = "tcp"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.this.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
