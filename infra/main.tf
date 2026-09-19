@@ -22,12 +22,10 @@ module "alb" {
 }
 
 module "route53" {
-  source                    = "./modules/route53"
-  domain_name               = var.domain_name
-  domain_validation_options = module.acm.domain_validation_options
-  certificate_arn           = module.acm.certificate_arn
-  alb_dns_name              = module.alb.dns_name
-  alb_zone_id               = module.alb.zone_id
+  source       = "./modules/route53"
+  domain_name  = var.domain_name
+  alb_dns_name = module.alb.dns_name
+  alb_zone_id  = module.alb.zone_id
 }
 
 module "iam" {
